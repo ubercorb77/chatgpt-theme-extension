@@ -19,6 +19,13 @@ injectFontFace();
 
 /* ========== stored values stuff ========== */
 
+const DEFAULT_VALUES = {
+  sliderValue1: 1,
+  sliderValue2: 0,
+  sliderValue3: 33,
+  sliderValue4: "https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif"
+};
+
 // Immediately try to load and apply stored values
 function applyStoredValues() {
   chrome.storage.local.get(null, function(items) {

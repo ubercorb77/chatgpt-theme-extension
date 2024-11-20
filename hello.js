@@ -1,4 +1,3 @@
-// popup.js
 document.addEventListener('DOMContentLoaded', function() {
     const sliders = [
         {
@@ -47,21 +46,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Load saved value from storage
         chrome.storage.local.get([sliderConfig.storageKey], function(result) {
-        const savedValue = result[sliderConfig.storageKey];
-        if (savedValue !== undefined) {
-            slider.value = savedValue;
-            valueDisplay.textContent = savedValue;
-            // Don't call updateCSSInPage here anymore -- idk why this is needed btw. im black boxing this
-            // updateCSSInPage(sliderConfig.cssVar, savedValue);
-            console.log(`Loaded ${sliderConfig.storageKey}:`, savedValue);
-        } else if (slider.type !== 'text') { // idk Exactly why this else-if-nottext is needed instead of just else, but it works! and i'll black box this for now.
-            // If no saved value, save the default
-            chrome.storage.local.set({ [sliderConfig.storageKey]: slider.value });
-            valueDisplay.textContent = slider.value;
-            updateCSSInPage(sliderConfig.cssVar, slider.value);
-            console.log(`Set default ${sliderConfig.storageKey}:`, slider.value);
-        }
-        });    
+            const savedValue = result[sliderConfig.storageKey];
+            if (savedValue !== undefined) {
+                slider.value = savedValue;
+                valueDisplay.textContent = savedValue;
+                console.log(`Loaded ${sliderConfig.storageKey}:`, savedValue);
+            } else {
+                // If no saved value, save the default
+                const defaultValue = DEFAULT_VALUES[sliderConfig.storageKey];
+                slider.value = defaultValue;
+                valueDisplay.textContent = defaultValue;
+                chrome.storage.local.set({ [sliderConfig.storageKey]: defaultValue });
+                updateCSSInPage(sliderConfig.cssVar, slider.type === 'text' ? `url("${defaultValue}")` : defaultValue);
+                console.log(`Set default ${sliderConfig.storageKey}:`, defaultValue);
+            }
+        });
         
         // Add event listeners for the slider
         slider.addEventListener(slider.type === 'text' ? 'change' : 'input', function(e) {
@@ -93,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.storage.local.get(null, function(items) {
                 console.log('All current stored values:', items);
             });
-        });    
+        });
     });
 
     // Log initial values
