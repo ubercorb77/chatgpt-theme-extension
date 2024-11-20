@@ -10,7 +10,7 @@
     "content_scripts": [
         {
           "js": ["scripts/content.js"],
-          "css": ["styles/style.css"],
+          "css": ["styles/styles.css"],
           "matches": ["https://chatgpt.com/*"]
         }
     ],
