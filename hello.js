@@ -1,3 +1,10 @@
+const DEFAULT_VALUES = {
+    sliderValue1: 1,
+    sliderValue2: 0,
+    sliderValue3: 33,
+    sliderValue4: "https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif"
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const sliders = [
         {
@@ -29,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update CSS variable in the webpage
     function updateCSSInPage(variable, value) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        if (!tabs[0]?.id) return;
-        
-        chrome.tabs.sendMessage(tabs[0].id, {
-            type: 'UPDATE_CSS',
-            variable: variable,
-            value: value
-        });
+            if (!tabs[0]?.id) return;
+            
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: 'UPDATE_CSS',
+                variable: variable,
+                value: value
+            });
         });
     }
 
