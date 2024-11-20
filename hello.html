@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="hello.css">
+</head>
+<body>
+  <div class="header">
+    <h1>corbin's chatgpt theme extension</h1>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label for="slider1">dark gradient top opacity (default 1):</label>
+      <input type="range" id="slider1" min="0" max="1" step="0.1" value="0.5">
+      <div class="slider-value"><span id="value1">1</span></div>
+    </div>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label for="slider2">dark gradient bottom opacity (default 0):</label>
+      <input type="range" id="slider2" min="0" max="1" step="0.1" value="0.5">
+      <div class="slider-value"><span id="value2">0</span></div>
+    </div>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label for="slider3">additional background black/white (set to 127 for none. default 33):</label>
+      <input type="range" id="slider3" min="0" max="255" value="33">
+      <div class="slider-value"><span id="value3">33</span></div>
+    </div>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label for="input4">background url:</label>
+      <input type="text" id="input4" placeholder="enter image url">
+      <div class="slider-value">current url: <span id="value4" class="text-xs break-all">https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif</span></div>
+    </div>
+  </div>
+
+  <script src="hello.js"></script>
+</body>
+</html>

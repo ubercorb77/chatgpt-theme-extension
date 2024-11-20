@@ -1,0 +1,31 @@
+{
+    "name": "chatgpt theme extension",
+    "description": "change the look a bit",
+    "version": "0.0.0.1",
+    "manifest_version": 3,
+    "action": {
+      "default_popup": "hello.html",
+      "default_icon": "panda128.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["scripts/content.js"],
+          "css": ["styles/style.css"],
+          "matches": ["https://chatgpt.com/*"]
+        }
+    ],
+    "icons": {
+      "128": "panda128.png"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [ "Noto_Serif_KR/*.ttf" ],
+        "matches": [ "https://chatgpt.com/*" ]
+      }
+    ],
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting"
+    ]
+}
