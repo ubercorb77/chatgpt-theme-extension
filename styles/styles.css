@@ -2,11 +2,12 @@
     --tw-prose-color: hsl(50 23.1 94.9 / 1) !important;
     --text-primary: hsl(50 23.1 94.9 / 1) !important;
 
-    /* we'll let these be set by content.js instead */
-    --slider-value-1: 0;  /* just some fallback... */
+    /* we'll let these be set by hello.js instead */
+    --slider-value-1: 1;
     --slider-value-2: 0;
-    --slider-value-3: 0;
-    --slider-value-4: none;
+    --slider-value-3: 33;
+    --slider-value-4: url("https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif");
+    /* these values immediately get overridden by hello.js BUT only after we click the extension for the first time. */
 }
 
 html, body, p {

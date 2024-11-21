@@ -21,22 +21,22 @@ injectFontFace();
 
 // Immediately try to load and apply stored values
 function applyStoredValues() {
-  chrome.storage.local.get(null, function(items) {
-      console.log('Content script loading stored values:', items);
-      
-      // Apply each stored value
-      if (items.sliderValue1 !== undefined) {
-          document.documentElement.style.setProperty('--slider-value-1', items.sliderValue1, 'important');
-      }
-      if (items.sliderValue2 !== undefined) {
-          document.documentElement.style.setProperty('--slider-value-2', items.sliderValue2, 'important');
-      }
-      if (items.sliderValue3 !== undefined) {
-          document.documentElement.style.setProperty('--slider-value-3', items.sliderValue3, 'important');
-      }
-      if (items.sliderValue4 !== undefined) {
-          document.documentElement.style.setProperty('--slider-value-4', `url("${items.sliderValue4}")`, 'important');
-      }
+  chrome.storage.local.get(null, function (items) {
+    console.log('Content script loading stored values:', items);
+
+    // Apply each stored value
+    if (items.sliderValue1 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-1', items.sliderValue1, 'important');
+    }
+    if (items.sliderValue2 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-2', items.sliderValue2, 'important');
+    }
+    if (items.sliderValue3 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-3', items.sliderValue3, 'important');
+    }
+    if (items.sliderValue4 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-4', `url("${items.sliderValue4}")`, 'important');
+    }
   });
 }
 
@@ -53,10 +53,41 @@ if (document.readyState === 'loading') {
 // Also apply when document is fully loaded (as backup)
 window.addEventListener('load', applyStoredValues);
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
+let claudeyEnabled = false;  // default state
+
+// load initial state
+chrome.storage.local.get(['claudeyEnabled'], function (result) {
+  claudeyEnabled = result.claudeyEnabled ?? false;
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  /* ========== update css listener ========== */
   if (request.type === 'UPDATE_CSS') {
-      document.documentElement.style.setProperty(request.variable, request.value, 'important');
-      console.log(`Content script updated ${request.variable} to ${request.value}`);
+    document.documentElement.style.setProperty(request.variable, request.value, 'important');
+    console.log(`Content script updated ${request.variable} to ${request.value}`);
+  }
+
+  /* ========== claudey button listener ========== */
+  if (request.type === 'TOGGLE_REPLACEMENTS') {
+    if (claudeyEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
+
+    claudeyEnabled = request.enabled;
+    // revert changes if disabled
+    if (!claudeyEnabled) {
+      // you might want to add code here to revert the changes
+      // like changing "claudey" back to "ChatGPT"
+
+      // or just reload the page
+      //location.reload();
+
+      // or just make an alert for the user to reload the page
+      alert("pls reload page to see changes");
+    } else {
+      // apply claudey
+      textSubs();
+      processNode(document.body);
+    }
   }
 });
 
@@ -68,49 +99,53 @@ const newPathData = 'm19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5
 const newViewBox = '0 0 100 100'; // New viewBox value
 
 function textSubs() {
+  if (!claudeyEnabled) return;
+
   //console.log("ran textSubs()")
   document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
     if (div.innerHTML.trim().startsWith('ChatGPT')) {
-        div.innerHTML = 'claudey' + div.innerHTML.trim().substring(7);
+      div.innerHTML = 'claudey' + div.innerHTML.trim().substring(7);
     }
 
     var innerDiv = div.querySelector('div > div');
     if (innerDiv) {
-        innerDiv = innerDiv.querySelector('div > div');
+      innerDiv = innerDiv.querySelector('div > div');
     }
     if (innerDiv && innerDiv.innerHTML.trim().startsWith('ChatGPT can make mistakes')) {
-        innerDiv.innerHTML = 'claudey can make mistakes. chrome extension theme made by corbin!';
+      innerDiv.innerHTML = 'claudey can make mistakes. chrome extension theme made by corbin!';
     }
   });
 }
 
 // Function to update SVG elements
 function updateSvg(svg) {
-    // console.log("ran updateSvg()");
+  if (!claudeyEnabled) return;
 
-    // Find the <path> element inside the current SVG
-    const path = svg.querySelector('path');
-    const textElement = svg.querySelector('text');
+  // console.log("ran updateSvg()");
 
-    if (textElement && textElement.textContent.trim() === 'ChatGPT') {
-        if (path) {
-            // Set the new 'd' attribute value
-            path.setAttribute('d', newPathData);
-            // Set the new color
-            path.setAttribute('fill', 'hsl(15, 63.1%, 59.6%)');
-            // Set the new viewBox attribute value
-            svg.setAttribute('viewBox', newViewBox);
-        }
+  // Find the <path> element inside the current SVG
+  const path = svg.querySelector('path');
+  const textElement = svg.querySelector('text');
+
+  if (textElement && textElement.textContent.trim() === 'ChatGPT') {
+    if (path) {
+      // Set the new 'd' attribute value
+      path.setAttribute('d', newPathData);
+      // Set the new color
+      path.setAttribute('fill', 'hsl(15, 63.1%, 59.6%)');
+      // Set the new viewBox attribute value
+      svg.setAttribute('viewBox', newViewBox);
     }
+  }
 }
 
 function processNode(node) {
   // console.log("ran processNode()");
   if (node.tagName === 'SVG' && node.classList.contains('icon-md')) {
-      updateSvg(node);
+    updateSvg(node);
   } else if (node.querySelectorAll) {
-      // Check descendants for SVGs
-      node.querySelectorAll('svg.icon-md').forEach(svg => updateSvg(svg));
+    // Check descendants for SVGs
+    node.querySelectorAll('svg.icon-md').forEach(svg => updateSvg(svg));
   }
 }
 
@@ -140,10 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 setupMutationObserver();
 
+let initialDelay = 500;
+let intervalDelay = 500;
+let timeLimit = 30000;
 window.addEventListener('load', () => {
   console.log("window loaded");
   //setupMutationObserver();
-  
+
   // Optionally process existing nodes after the observer is set up
   //processNode(document.body);
   console.log("hello");
@@ -164,11 +202,11 @@ window.addEventListener('load', () => {
       processNode(document.body);
       count++;
 
-      if (count >= 50) { // stop after 40 runs (20 seconds)
+      if (count >= timeLimit) { // stop after __ milliseconds
         clearInterval(interval);
-        console.log("stopped interval after 30 seconds");
+        console.log(`stopped interval after ${timeLimit / 1000} seconds`);
       }
-    }, 500); // run every .5 seconds
-  }, 500); // initial .5 second delay
+    }, intervalDelay); // delay of __ seconds inbetween each run
+  }, initialDelay); // initial delay of __ seconds before first run
 
 });

@@ -22,6 +22,55 @@ body {
     text-transform: lowercase;
 }
 
+
+/* ==== buttons ==== */
+
+.toggle-button {
+    /* same as reset-button but different colors */
+    width: 100%;
+    padding: 8px;
+    background: rgb(92, 179, 105);  /* greenish */
+    border: none;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: lowercase;
+}
+
+.toggle-button:hover {
+    background: rgb(112, 199, 125);
+}
+
+.toggle-button.disabled {
+    background: rgb(179, 92, 92);  /* reddish when disabled */
+}
+
+.toggle-button.disabled:hover {
+    background: rgb(199, 112, 112);
+}
+
+.reset-button {
+    width: 100%;
+    padding: 8px;
+    background: rgb(105, 92, 179);
+    border: none;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: lowercase;
+}
+
+.reset-button:hover {
+    background: rgb(125, 112, 199);
+}
+
+
+/* ==== sliders ==== */
+
 .slider-container {
     margin: 8px 0;
 }

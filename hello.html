@@ -10,7 +10,7 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider1">dark gradient top opacity (default 1):</label>
+      <label for="slider1">background top opacity:</label>
       <input type="range" id="slider1" min="0" max="1" step="0.1" value="0.5">
       <div class="slider-value"><span id="value1">foo</span></div>
     </div>
@@ -18,7 +18,7 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider2">dark gradient bottom opacity (default 0):</label>
+      <label for="slider2">background bottom opacity:</label>
       <input type="range" id="slider2" min="0" max="1" step="0.1" value="0.5">
       <div class="slider-value"><span id="value2">foo</span></div>
     </div>
@@ -26,7 +26,7 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider3">additional background black/white (set to 127 for none. default 33):</label>
+      <label for="slider3">background light/dark bias:</label>
       <input type="range" id="slider3" min="0" max="255" value="33">
       <div class="slider-value"><span id="value3">foo</span></div>
     </div>
@@ -34,11 +34,25 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="input4">background url:</label>
+      <label for="input4">background image url:</label>
       <input type="text" id="input4" placeholder="enter image url">
       <div class="slider-value">current url: <span id="value4" class="text-xs break-all">foo</span></div>
     </div>
   </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label>"claudey" replacements:</label> <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
+      <button id="toggleButton" class="toggle-button">enabled</button>
+    </div>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+      <label>reset to defaults:</label> <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
+      <button id="resetButton" class="reset-button">reset</button>
+    </div>
+  </div>  
 
   <script src="hello.js"></script>
 </body>

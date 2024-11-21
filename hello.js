@@ -2,7 +2,8 @@ const DEFAULT_VALUES = {
     sliderValue1: 1,
     sliderValue2: 0,
     sliderValue3: 33,
-    sliderValue4: "https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif"
+    sliderValue4: "https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif",
+    claudeyEnabled: false
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -102,7 +103,83 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Log initial values
+
+    /* ========== Reset button ========== */
+
+    const resetButton = document.getElementById('resetButton');
+    resetButton.addEventListener('click', function() {
+        // reset each slider to default value
+        sliders.forEach(sliderConfig => {
+            const slider = document.getElementById(sliderConfig.id);
+            const valueDisplay = document.getElementById(sliderConfig.valueId);
+            const defaultValue = DEFAULT_VALUES[sliderConfig.storageKey];
+            
+            // update ui
+            slider.value = defaultValue;
+            valueDisplay.textContent = defaultValue;
+            
+            // update css in page
+            updateCSSInPage(sliderConfig.cssVar, 
+                slider.type === 'text' ? `url("${defaultValue}")` : defaultValue);
+            
+            // save to storage
+            chrome.storage.local.set({ [sliderConfig.storageKey]: defaultValue });
+        });
+
+        // reset claudey
+        chrome.storage.local.set({ claudeyEnabled: DEFAULT_VALUES.claudeyEnabled });
+        updateToggleButton(DEFAULT_VALUES.claudeyEnabled);
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: 'TOGGLE_REPLACEMENTS',
+                enabled: DEFAULT_VALUES.claudeyEnabled
+            });
+        });
+        
+        console.log('Reset all values to defaults');
+    });
+
+
+    /* ========== Claudey toggle button ========== */
+
+    const toggleButton = document.getElementById('toggleButton');
+
+    // load initial state
+    chrome.storage.local.get(['claudeyEnabled'], function(result) {
+        const enabled = result.claudeyEnabled ?? DEFAULT_VALUES.claudeyEnabled;
+        updateToggleButton(enabled);
+    });
+
+    function updateToggleButton(enabled) {
+        toggleButton.textContent = enabled ? 'enabled' : 'disabled';
+        toggleButton.classList.toggle('disabled', !enabled);
+    }
+
+    toggleButton.addEventListener('click', function() {
+        chrome.storage.local.get(['claudeyEnabled'], function(result) {
+            const currentlyEnabled = result.claudeyEnabled ?? DEFAULT_VALUES.claudeyEnabled;
+            const newEnabled = !currentlyEnabled;
+            
+            // update storage
+            chrome.storage.local.set({ claudeyEnabled: newEnabled });
+            
+            // update button appearance
+            updateToggleButton(newEnabled);
+            
+            // tell content script
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                if (!tabs[0]?.id) return;
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    type: 'TOGGLE_REPLACEMENTS',
+                    enabled: newEnabled
+                });
+            });
+        });
+    });
+
+
+    /* ========== stored values ========== */
     console.log('Popup opened, getting all stored values...');
     chrome.storage.local.get(null, function(items) {
         console.log('All stored values:', items);
