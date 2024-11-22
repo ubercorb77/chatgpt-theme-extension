@@ -37,6 +37,21 @@ function applyStoredValues() {
     if (items.sliderValue4 !== undefined) {
       document.documentElement.style.setProperty('--slider-value-4', `url("${items.sliderValue4}")`, 'important');
     }
+    if (items.sliderValue5 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-5', items.sliderValue5, 'important');
+    }
+    if (items.sliderValue6 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-6', items.sliderValue6, 'important');
+    }
+    if (items.sliderValue7 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-7', items.sliderValue7, 'important');
+    }
+    if (items.sliderValue8 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-8', items.sliderValue8, 'important');
+    }
+    if (items.sliderValue9 !== undefined) {
+      document.documentElement.style.setProperty('--slider-value-9', items.sliderValue9, 'important');
+    }
   });
 }
 
@@ -103,8 +118,14 @@ function textSubs() {
 
   //console.log("ran textSubs()")
   document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
-    if (div.innerHTML.trim().startsWith('ChatGPT')) {
+    // trying to target the "ChatGPT 4o" element
+    if (div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
+      // `&& div.innerHTML.trim().length > 8` is here because sometimes it loads with only "ChatGPT " and then changes to "ChatGPT"<span>4o</span> after a fraction of a second ... which is interesting
+      console.log("div: ", div);
+      console.log("div children: ", div.children);
+      console.log("original innerHTML:", '"'+div.innerHTML+'"');
       div.innerHTML = 'claudey' + div.innerHTML.trim().substring(7);
+      console.log("changed innerHTML: ", '"'+div.innerHTML+'"');
     }
 
     var innerDiv = div.querySelector('div > div');

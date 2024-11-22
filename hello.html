@@ -1,42 +1,108 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="hello.css">
 </head>
 <body>
-  <div class="header">
-    <h1>corbin's chatgpt theme extension</h1>
-  </div>
+  <h1>corbin's chatgpt theme extension</h1>
 
   <div class="slider-group">
     <div class="slider-container">
       <label for="slider1">background top opacity:</label>
-      <input type="range" id="slider1" min="0" max="1" step="0.1" value="0.5">
-      <div class="slider-value"><span id="value1">foo</span></div>
+      <div class="slider-input-group">
+        <input type="range" id="slider1" min="0" max="1" step="0.1" value="0.5">
+        <div class="slider-value"><span id="value1">foo</span></div>
+      </div>
     </div>
   </div>
 
   <div class="slider-group">
     <div class="slider-container">
       <label for="slider2">background bottom opacity:</label>
-      <input type="range" id="slider2" min="0" max="1" step="0.1" value="0.5">
-      <div class="slider-value"><span id="value2">foo</span></div>
+      <div class="slider-input-group">
+        <input type="range" id="slider2" min="0" max="1" step="0.1" value="0.5">
+        <div class="slider-value"><span id="value2">foo</span></div>
+      </div>
     </div>
   </div>
 
   <div class="slider-group">
     <div class="slider-container">
       <label for="slider3">background light/dark bias:</label>
-      <input type="range" id="slider3" min="0" max="255" value="33">
-      <div class="slider-value"><span id="value3">foo</span></div>
+      <div class="slider-input-group">
+        <input type="range" id="slider3" min="0" max="255" value="33">
+        <div class="slider-value"><span id="value3">foo</span></div>
+      </div>
     </div>
   </div>
 
   <div class="slider-group">
     <div class="slider-container">
       <label for="input4">background image url:</label>
-      <input type="text" id="input4" placeholder="enter image url">
-      <div class="slider-value">current url: <span id="value4" class="text-xs break-all">foo</span></div>
+      <div class="slider-input-group">
+        <input type="text" id="input4" placeholder="enter image url">
+        <!-- <div class="slider-value">current url: <span id="value4" class="text-xs break-all">foo</span></div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="slider-group">
+    <div class="slider-container">
+        <label for="input5">font name:</label>
+        <div class="slider-input-group">
+          <input type="text" id="input5" placeholder="enter font name">
+          <!-- <div class="slider-value">current font: <span id="value5" class="text-xs break-all">foo</span></div> -->
+        </div>
+    </div>
+  </div>
+
+  <div class="folder">
+    <button class="folder-button">
+        <span class="folder-label">bubble appearance</span>
+        <span class="folder-arrow">▼</span>
+    </button>
+    <div class="folder-content">
+      <div class="slider-group">
+        <div class="slider-container">
+          <label for="slider6">top opacity:</label>
+          <div class="slider-input-group">
+            <input type="range" id="slider6" min="0" max="1" step="0.05" value="0.5">
+            <div class="slider-value"><span id="value6">foo</span></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="slider-group">
+        <div class="slider-container">
+          <label for="slider7">bottom opacity:</label>
+          <div class="slider-input-group">
+            <input type="range" id="slider7" min="0" max="1" step="0.05" value="0.5">
+            <div class="slider-value"><span id="value7">foo</span></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="slider-group">
+        <div class="slider-container">
+          <label for="slider8">top-left opacity:</label>
+          <div class="slider-input-group">
+            <input type="range" id="slider8" min="0" max="1" step="0.05" value="0.5">
+            <div class="slider-value"><span id="value8">foo</span></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="slider-group">
+        <div class="slider-container">
+          <label for="slider9">bottom-right opacity:</label>
+          <div class="slider-input-group">
+            <input type="range" id="slider9" min="0" max="1" step="0.05" value="0.5">
+            <div class="slider-value"><span id="value9">foo</span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -52,7 +118,7 @@
       <label>reset to defaults:</label> <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
       <button id="resetButton" class="reset-button">reset</button>
     </div>
-  </div>  
+  </div>
 
   <script src="hello.js"></script>
 </body>

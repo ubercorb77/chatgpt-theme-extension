@@ -1,8 +1,27 @@
+/* ==== for popup folder ==== */
+
+// add this inside your DOMContentLoaded event listener
+const folderButton = document.querySelector('.folder-button');
+folderButton.addEventListener('click', () => {
+    folderButton.parentElement.classList.toggle('collapsed');
+});
+
+// optionally start collapsed 
+document.querySelector('.folder').classList.add('collapsed');
+
+
+/* ==== actual functionality starts here ==== */
+
 const DEFAULT_VALUES = {
-    sliderValue1: 1,
+    sliderValue1: 0.8,
     sliderValue2: 0,
     sliderValue3: 33,
     sliderValue4: "https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif",
+    sliderValue5: "Noto Serif KR",
+    sliderValue6: 0.75,
+    sliderValue7: 0,
+    sliderValue8: 0.6,
+    sliderValue9: 0.4,
     claudeyEnabled: false
 };
 
@@ -30,13 +49,51 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'input4',
             valueId: 'value4',
             storageKey: 'sliderValue4',
-            cssVar: '--slider-value-4'
+            cssVar: '--slider-value-4',
+            isUrl: true
+        },
+        {
+            id: 'input5',
+            valueId: 'value5',
+            storageKey: 'sliderValue5',
+            cssVar: '--slider-value-5',
+            isUrl: false /* we actually don't need the "isUrl: false" here or in the other entries, because undefined is falsy */
+        },
+        {
+            id: 'slider6',
+            valueId: 'value6',
+            storageKey: 'sliderValue6',
+            cssVar: '--slider-value-6'
+        },
+        {
+            id: 'slider7',
+            valueId: 'value7',
+            storageKey: 'sliderValue7',
+            cssVar: '--slider-value-7'
+        },
+        {
+            id: 'slider8',
+            valueId: 'value8',
+            storageKey: 'sliderValue8',
+            cssVar: '--slider-value-8'
+        },
+        {
+            id: 'slider9',
+            valueId: 'value9',
+            storageKey: 'sliderValue9',
+            cssVar: '--slider-value-9'
         }
     ];
 
     // Function to update CSS variable in the webpage
     function updateCSSInPage(variable, value) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.query({
+            url: [
+                "https://chatgpt.com/*",
+                "https://chat.openai.com/*",
+                "https://chat.com/*"
+            ]
+        }, function(tabs) {
             if (!tabs[0]?.id) return;
             
             chrome.tabs.sendMessage(tabs[0].id, {
@@ -57,15 +114,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const savedValue = result[sliderConfig.storageKey];
             if (savedValue !== undefined) {
                 slider.value = savedValue;
-                valueDisplay.textContent = savedValue;
+                if (valueDisplay) {
+                    valueDisplay.textContent = savedValue;
+                }
                 console.log(`Loaded ${sliderConfig.storageKey}:`, savedValue);
             } else {
                 // If no saved value, save the default
                 const defaultValue = DEFAULT_VALUES[sliderConfig.storageKey];
                 slider.value = defaultValue;
-                valueDisplay.textContent = defaultValue;
+                if (valueDisplay) {
+                    valueDisplay.textContent = defaultValue;
+                }
                 chrome.storage.local.set({ [sliderConfig.storageKey]: defaultValue });
-                updateCSSInPage(sliderConfig.cssVar, slider.type === 'text' ? `url("${defaultValue}")` : defaultValue);
+                updateCSSInPage(sliderConfig.cssVar, 
+                    sliderConfig.isUrl ? `url("${defaultValue}")` : defaultValue);
                 console.log(`Set default ${sliderConfig.storageKey}:`, defaultValue);
             }
         });
@@ -73,11 +135,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners for the slider
         slider.addEventListener(slider.type === 'text' ? 'change' : 'input', function(e) {
             const newValue = this.value;
-            const formattedValue = this.type === 'text' ? 
+            const formattedValue = sliderConfig.isUrl ?
                 `url("${newValue}")` : newValue;
             
             // Update display immediately
-            valueDisplay.textContent = newValue;
+            if (valueDisplay) {
+                valueDisplay.textContent = newValue;
+            }
             
             // Update CSS variable in the page
             updateCSSInPage(sliderConfig.cssVar, formattedValue);
@@ -116,11 +180,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // update ui
             slider.value = defaultValue;
-            valueDisplay.textContent = defaultValue;
-            
+            if (valueDisplay) {
+                valueDisplay.textContent = defaultValue;
+            }
+
             // update css in page
             updateCSSInPage(sliderConfig.cssVar, 
-                slider.type === 'text' ? `url("${defaultValue}")` : defaultValue);
+                sliderConfig.isUrl ? `url("${defaultValue}")` : defaultValue);
             
             // save to storage
             chrome.storage.local.set({ [sliderConfig.storageKey]: defaultValue });
@@ -129,7 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // reset claudey
         chrome.storage.local.set({ claudeyEnabled: DEFAULT_VALUES.claudeyEnabled });
         updateToggleButton(DEFAULT_VALUES.claudeyEnabled);
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.query({
+            url: [
+                "https://chatgpt.com/*",
+                "https://chat.openai.com/*",
+                "https://chat.com/*"
+            ]
+        }, function (tabs) {
             if (!tabs[0]?.id) return;
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: 'TOGGLE_REPLACEMENTS',
@@ -168,7 +240,13 @@ document.addEventListener('DOMContentLoaded', function() {
             updateToggleButton(newEnabled);
             
             // tell content script
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.query({
+                url: [
+                    "https://chatgpt.com/*",
+                    "https://chat.openai.com/*",
+                    "https://chat.com/*"
+                ]
+            }, function(tabs) {
                 if (!tabs[0]?.id) return;
                 chrome.tabs.sendMessage(tabs[0].id, {
                     type: 'TOGGLE_REPLACEMENTS',
@@ -185,3 +263,5 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('All stored values:', items);
     });
 });
+
+// you have found an easter egg! 🥚 congrats!!! :)))))

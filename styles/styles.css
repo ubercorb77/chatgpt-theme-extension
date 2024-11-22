@@ -2,16 +2,27 @@
     --tw-prose-color: hsl(50 23.1 94.9 / 1) !important;
     --text-primary: hsl(50 23.1 94.9 / 1) !important;
 
-    /* we'll let these be set by hello.js instead */
-    --slider-value-1: 1;
+    /* we'll let the below values be set by hello.js instead */
+
+    /* these values immediately get overridden by hello.js AFTER we click the extension for the first time. */
+
+    /* but note that these fallback values always have a good chance to display for like 0.1 secs every time we go to chatgpt */
+
+    --slider-value-1: 0.8;
     --slider-value-2: 0;
     --slider-value-3: 33;
-    --slider-value-4: url("https://i.pinimg.com/originals/6a/ee/ea/6aeeea24e8fd4023a349e354eefa33ed.gif");
-    /* these values immediately get overridden by hello.js BUT only after we click the extension for the first time. */
+    
+    --slider-value-4: none;
+    --slider-value-5: "Noto Serif KR";
+
+    --slider-value-6: 0.75;
+    --slider-value-7: 0;
+    --slider-value-8: 0.6;
+    --slider-value-9: 0.4;
 }
 
 html, body, p {
-    font-family: 'Noto Serif KR', Comic Sans MS, ui-sans-serif,-apple-system,system-ui,Segoe UI,Helvetica,Apple Color Emoji,Arial,sans-serif,Segoe UI Emoji,Segoe UI Symbol !important;
+    font-family: var(--slider-value-5), ui-sans-serif,-apple-system,system-ui,Segoe UI,Helvetica,Apple Color Emoji,Arial,sans-serif,Segoe UI Emoji,Segoe UI Symbol !important;
 }
 
 hr {
@@ -63,17 +74,23 @@ article[data-testid^="conversation-turn-"] > div {
     /*border-radius: 999rem !important;*/
 }
 
+
 /* ==== user bubbles ==== */
 div[data-message-author-role="user"] .bg-token-message-surface {
-    /* i dislike the following commented lines but you can uncomment if u want */
-    /* background-color: rgba(0, 0, 0, 0) !important;
-    background-image: linear-gradient(0deg, hsl(48 10.6 9.2 / 0.75), hsl(48 8.2 12 / 0.6)) !important;
-    border-radius: 0.75rem !important; */
+    /* i dislike the following 3 commented lines but you can uncomment if u want */
+    /* background-color: rgba(0, 0, 0, 0) !important; */
+    /* background-image: linear-gradient(0deg, hsl(48 10.6 9.2 / 0.75), hsl(48 8.2 12 / 0.6)) !important; */
+    /* border-radius: 0.75rem !important; */
+    
+    /* idk if this is better than the chatgpt default */
+    /* background-color: rgba(57, 55, 55, 0.8) !important; */
+
     padding-top: 0.625rem !important;
     padding-bottom: 0.625rem !important;
     padding-left: 1.125rem !important;
     padding-right: 1.125rem !important;
 }
+
 
 /* ==== chatgpt bubbles ==== */
 div[data-message-author-role="assistant"] {
@@ -86,10 +103,10 @@ div[data-message-author-role="assistant"] {
     color: hsl(50 23.1 94.9);
 
     border-radius: 1rem !important;
-    background-image: linear-gradient(to bottom, hsla(60 1.8 22 / .75) 0, hsla(60 1.8 22 / 0) 90%) !important;
+    background-image: linear-gradient(to bottom, hsla(60 1.8 22 / var(--slider-value-6)) 0, hsla(60 1.8 22 / var(--slider-value-7)) 90%) !important;
 }
 
-/* ==== chatgpt bubbles, some more background stuff ==== */
+/* ==== chatgpt bubbles, more background (::before psuedo element) ==== */
 div[data-message-author-role="assistant"]::before {
     content: "";
     
@@ -103,11 +120,11 @@ div[data-message-author-role="assistant"]::before {
     left: 0;
 
     /* Other styles as needed, like border, shadow, etc. */
-    background-image: radial-gradient(ellipse at left top, hsla(60 1.8 22 / .6) 0, hsla(60 1.8 22 / .4) 60%) !important; /* can also try .5 to .3 opacity */
+    background-image: radial-gradient(ellipse at left top, hsla(60 1.8 22 / var(--slider-value-8)) 0, hsla(60 1.8 22 / var(--slider-value-9)) 60%) !important; /* can also try .5 to .3 opacity */
     opacity: 1 !important;
     border-radius: 1rem;
     border-width: 0.5px;
     border-color: hsla(50 5.8 40 / .15);
 
-    pointer-events: none; /* Allow interactions with the text */
+    pointer-events: none; /* Allow interactions with the text */ /* actually idk if this line is needed */
 }
