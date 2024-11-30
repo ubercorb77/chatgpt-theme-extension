@@ -1,6 +1,10 @@
 coolio
 
-<a href="https://www.flaticon.com/free-icons/turtle" title="turtle icons">Turtle icons created by Freepik - Flaticon</a>
+turtle icons:
+<a href="https://www.flaticon.com/free-icons/turtle" title="turtle icons">Freepik - Flaticon</a>
+
+svg icons:
+<a href="https://www.svgrepo.com" target="_blank">SVG Repo</a>
 
 ## TODOs:
 
@@ -17,6 +21,9 @@ known bugs
 - ( ) doesnt work when doing it on different window?? tf
 
 would be nice to implement:
+- claudey replacements settings
+    - ( ) name
+    - ( ) svg settings
 - ( ) chat bubbles are claude gray but user bubbles are true gray
 - ( ) need to change the popup styling bc its lowk ugly
 - (x) allow the claudey thing to be turned on and off
