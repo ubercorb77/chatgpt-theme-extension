@@ -6,22 +6,41 @@ body {
     margin: 0;
     background-color: #1a1a1a;
     color: #e0e0e0;
+    /*background-color: #f9fafb;
+    color: #374151;*/
+    min-width: 350px;
     width: 350px;
     padding: 12px;
+}
+
+.head-container {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 0 12px;
+    margin: 6px 0 12px;
+    border-bottom: 2px solid #333;
 }
 
 h1 {
     text-align: center;
     margin: 0;
-    font-size: 18px;
+    font-size: 1.25rem;
     font-weight: 500;
     /* color: rgb(142, 131, 222); */
     font-style: italic;
     font-weight: bold;
     text-transform: lowercase;
-    margin-bottom: 12px;
-    padding: 8px 0;
-    border-bottom: 2px solid #333;
+    margin-bottom: 6px;
+    /* padding: 8px 0;
+    border-bottom: 2px solid #333; */
+}
+
+p {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin: 0;
 }
 
 /* ==== folder ==== */

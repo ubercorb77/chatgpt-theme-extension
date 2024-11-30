@@ -2,15 +2,15 @@
 
 // Add this near the start of content.js, before your existing code
 function injectFontFace() {
-  const fontUrl = chrome.runtime.getURL('Noto_Serif_KR/NotoSerifKR-VariableFont_wght.ttf');
-  const style = document.createElement('style');
-  style.textContent = `
+    const fontUrl = chrome.runtime.getURL('Noto_Serif_KR/NotoSerifKR-VariableFont_wght.ttf');
+    const style = document.createElement('style');
+    style.textContent = `
       @font-face {
           font-family: 'Noto Serif KR';
           src: url('${fontUrl}') format('truetype');
       }
   `;
-  document.head.appendChild(style);
+    document.head.appendChild(style);
 }
 
 // Call it immediately
@@ -21,38 +21,38 @@ injectFontFace();
 
 // Immediately try to load and apply stored values
 function applyStoredValues() {
-  chrome.storage.local.get(null, function (items) {
-    console.log('Content script loading stored values:', items);
+    chrome.storage.local.get(null, function (items) {
+        console.log('Content script loading stored values:', items);
 
-    // Apply each stored value
-    if (items.sliderValue1 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-1', items.sliderValue1, 'important');
-    }
-    if (items.sliderValue2 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-2', items.sliderValue2, 'important');
-    }
-    if (items.sliderValue3 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-3', items.sliderValue3, 'important');
-    }
-    if (items.sliderValue4 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-4', `url("${items.sliderValue4}")`, 'important');
-    }
-    if (items.sliderValue5 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-5', items.sliderValue5, 'important');
-    }
-    if (items.sliderValue6 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-6', items.sliderValue6, 'important');
-    }
-    if (items.sliderValue7 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-7', items.sliderValue7, 'important');
-    }
-    if (items.sliderValue8 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-8', items.sliderValue8, 'important');
-    }
-    if (items.sliderValue9 !== undefined) {
-      document.documentElement.style.setProperty('--slider-value-9', items.sliderValue9, 'important');
-    }
-  });
+        // Apply each stored value
+        if (items.sliderValue1 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-1', items.sliderValue1, 'important');
+        }
+        if (items.sliderValue2 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-2', items.sliderValue2, 'important');
+        }
+        if (items.sliderValue3 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-3', items.sliderValue3, 'important');
+        }
+        if (items.sliderValue4 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-4', `url("${items.sliderValue4}")`, 'important');
+        }
+        if (items.sliderValue5 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-5', items.sliderValue5, 'important');
+        }
+        if (items.sliderValue6 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-6', items.sliderValue6, 'important');
+        }
+        if (items.sliderValue7 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-7', items.sliderValue7, 'important');
+        }
+        if (items.sliderValue8 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-8', items.sliderValue8, 'important');
+        }
+        if (items.sliderValue9 !== undefined) {
+            document.documentElement.style.setProperty('--slider-value-9', items.sliderValue9, 'important');
+        }
+    });
 }
 
 // Apply immediately
@@ -60,9 +60,9 @@ applyStoredValues();
 
 // Also apply when document is ready (as backup)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', applyStoredValues);
+    document.addEventListener('DOMContentLoaded', applyStoredValues);
 } else {
-  applyStoredValues();
+    applyStoredValues();
 }
 
 // Also apply when document is fully loaded (as backup)
@@ -73,37 +73,37 @@ let claudeyEnabled = false;  // default state
 
 // load initial state
 chrome.storage.local.get(['claudeyEnabled'], function (result) {
-  claudeyEnabled = result.claudeyEnabled ?? false;
+    claudeyEnabled = result.claudeyEnabled ?? false;
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  /* ========== update css listener ========== */
-  if (request.type === 'UPDATE_CSS') {
-    document.documentElement.style.setProperty(request.variable, request.value, 'important');
-    console.log(`Content script updated ${request.variable} to ${request.value}`);
-  }
-
-  /* ========== claudey button listener ========== */
-  if (request.type === 'TOGGLE_REPLACEMENTS') {
-    if (claudeyEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
-
-    claudeyEnabled = request.enabled;
-    // revert changes if disabled
-    if (!claudeyEnabled) {
-      // you might want to add code here to revert the changes
-      // like changing "claudey" back to "ChatGPT"
-
-      // or just reload the page
-      //location.reload();
-
-      // or just make an alert for the user to reload the page
-      alert("pls reload page to see changes");
-    } else {
-      // apply claudey
-      textSubs();
-      processNode(document.body);
+    /* ========== update css listener ========== */
+    if (request.type === 'UPDATE_CSS') {
+        document.documentElement.style.setProperty(request.variable, request.value, 'important');
+        console.log(`Content script updated ${request.variable} to ${request.value}`);
     }
-  }
+
+    /* ========== claudey button listener ========== */
+    if (request.type === 'TOGGLE_REPLACEMENTS') {
+        if (claudeyEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
+
+        claudeyEnabled = request.enabled;
+        // revert changes if disabled
+        if (!claudeyEnabled) {
+            // you might want to add code here to revert the changes
+            // like changing "claudey" back to "ChatGPT"
+
+            // or just reload the page
+            //location.reload();
+
+            // or just make an alert for the user to reload the page
+            alert("pls reload page to see changes");
+        } else {
+            // apply claudey
+            textSubs();
+            processNode(document.body);
+        }
+    }
 });
 
 
@@ -114,84 +114,116 @@ const newPathData = 'm19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5
 const newViewBox = '0 0 100 100'; // New viewBox value
 
 function textSubs() {
-  if (!claudeyEnabled) return;
+    if (!claudeyEnabled) return;
 
-  //console.log("ran textSubs()")
-  document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
-    // trying to target the "ChatGPT 4o" element
-    if (div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
-      // `&& div.innerHTML.trim().length > 8` is here because sometimes it loads with only "ChatGPT " and then changes to "ChatGPT"<span>4o</span> after a fraction of a second ... which is interesting
-      console.log("div: ", div);
-      console.log("div children: ", div.children);
-      console.log("original innerHTML:", '"'+div.innerHTML+'"');
-      div.innerHTML = 'claudey' + div.innerHTML.trim().substring(7);
-      console.log("changed innerHTML: ", '"'+div.innerHTML+'"');
-    }
+    //console.log("ran textSubs()")
+    document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
+        // trying to target the "ChatGPT 4o" element
+        if (div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
+            // `&& div.innerHTML.trim().length > 8` is here because sometimes it loads with only "ChatGPT " and then changes to "ChatGPT"<span>4o</span> after a fraction of a second ... which is interesting
+            console.log("div: ", div);
+            console.log("div children: ", div.children);
+            console.log("original innerHTML:", '"' + div.innerHTML + '"');
+            div.innerHTML = 'claudey' + div.innerHTML.trim().substring(7);
+            console.log("changed innerHTML: ", '"' + div.innerHTML + '"');
+        }
 
-    var innerDiv = div.querySelector('div > div');
-    if (innerDiv) {
-      innerDiv = innerDiv.querySelector('div > div');
-    }
-    if (innerDiv && innerDiv.innerHTML.trim().startsWith('ChatGPT can make mistakes')) {
-      innerDiv.innerHTML = 'claudey can make mistakes. chrome extension theme made by corbin!';
-    }
-  });
+        var innerDiv = div.querySelector('div > div');
+        if (innerDiv) {
+            innerDiv = innerDiv.querySelector('div > div');
+        }
+        if (innerDiv && innerDiv.innerHTML.trim().startsWith('ChatGPT can make mistakes')) {
+            innerDiv.innerHTML = 'claudey can make mistakes. chrome extension theme made by corbin!';
+        }
+    });
 }
 
 // Function to update SVG elements
 function updateSvg(svg) {
-  if (!claudeyEnabled) return;
+    if (!claudeyEnabled) return;
 
-  // console.log("ran updateSvg()");
+    // console.log("ran updateSvg()");
 
-  // Find the <path> element inside the current SVG
-  const path = svg.querySelector('path');
-  const textElement = svg.querySelector('text');
+    // Find the <path> element inside the current SVG
+    const path = svg.querySelector('path');
+    const textElement = svg.querySelector('text');
 
-  if (textElement && textElement.textContent.trim() === 'ChatGPT') {
-    if (path) {
-      // Set the new 'd' attribute value
-      path.setAttribute('d', newPathData);
-      // Set the new color
-      path.setAttribute('fill', 'hsl(15, 63.1%, 59.6%)');
-      // Set the new viewBox attribute value
-      svg.setAttribute('viewBox', newViewBox);
+    if (textElement && textElement.textContent.trim() === 'ChatGPT') {
+        if (path) {
+            // Set the new 'd' attribute value
+            path.setAttribute('d', newPathData);
+            // Set the new color
+            path.setAttribute('fill', 'hsl(15, 63.1%, 59.6%)');
+            // Set the new viewBox attribute value
+            svg.setAttribute('viewBox', newViewBox);
+        }
     }
-  }
 }
 
 function processNode(node) {
-  // console.log("ran processNode()");
-  if (node.tagName === 'SVG' && node.classList.contains('icon-md')) {
-    updateSvg(node);
-  } else if (node.querySelectorAll) {
-    // Check descendants for SVGs
-    node.querySelectorAll('svg.icon-md').forEach(svg => updateSvg(svg));
-  }
+    // console.log("ran processNode()");
+    if (node.tagName === 'SVG' && node.classList.contains('icon-md')) {
+        updateSvg(node);
+    } else if (node.querySelectorAll) {
+        // Check descendants for SVGs
+        node.querySelectorAll('svg.icon-md').forEach(svg => updateSvg(svg));
+    }
 }
 
 function setupMutationObserver() {
-  console.log("ran setupMutationObserver()");
-  // Create a MutationObserver to watch for changes in the document
-  const observer = new MutationObserver(mutationsList => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        textSubs();
-        // Check added nodes
-        mutation.addedNodes.forEach(node => {
-          processNode(node);
-        });
-      }
-    }
-  });
+    console.log("ran setupMutationObserver()");
+    // Create a MutationObserver to watch for changes in the document
+    const observer = new MutationObserver(mutationsList => {
+        for (const mutation of mutationsList) {
+            // Check for added nodes so we can run textSubs() + processNode()
+            if (mutation.type === 'childList') {
+                textSubs();
+                // Check added nodes
+                mutation.addedNodes.forEach(node => {
+                    processNode(node);
+                });
+            }
 
-  // Start observing the document body for changes
-  observer.observe(document.body, { childList: true, subtree: true });
+            // Check attribute changes for the model switcher dropdown button
+            if (mutation.type === 'attributes' &&
+                mutation.attributeName === 'aria-label' &&
+                mutation.target.matches('[data-testid="model-switcher-dropdown-button"]')) {
+
+                const newLabel = mutation.target.getAttribute('aria-label');
+                console.log("model switcher aria-label changed to:", newLabel);
+
+                const ariaLabel = mutation.target.getAttribute('aria-label');
+
+                // extract model name using regex (⋆｡✧)
+                const match = ariaLabel.match(/Model selector, current model is (.*)/);
+                if (match) {
+                    const modelName = match[1];
+                    console.log("model changed to:", modelName);
+
+                    // make sure we only update span inside this specific button (◕‿◕✿)
+                    const button = mutation.target;  // this is our button with data-testid
+                    const span = button.querySelector('span.text-token-text-secondary');
+                    if (span && span.closest('[data-testid="model-switcher-dropdown-button"]') === button) {
+                        span.innerHTML = modelName;
+                    }
+                }
+            }
+        } // end for (const mutation of mutationsList) {...}
+    }); // end new MutationObserver(...)
+
+    // Start observing the document body for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+
+        attributes: true,
+        attributeFilter: ['aria-label']
+    });
 }
 
 // Set up the MutationObserver after DOM content is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM content loaded");
+    console.log("DOM content loaded");
 });
 
 setupMutationObserver();
@@ -200,34 +232,34 @@ let initialDelay = 500;
 let intervalDelay = 500;
 let timeLimit = 30000;
 window.addEventListener('load', () => {
-  console.log("window loaded");
-  //setupMutationObserver();
+    console.log("window loaded");
+    //setupMutationObserver();
 
-  // Optionally process existing nodes after the observer is set up
-  //processNode(document.body);
-  console.log("hello");
+    // Optionally process existing nodes after the observer is set up
+    //processNode(document.body);
+    console.log("hello");
 
 
-  // Wait before starting the interval
-  setTimeout(() => {
-    console.log("starting interval after 5 second delay");
+    // Wait before starting the interval
+    setTimeout(() => {
+        console.log("starting interval after 5 second delay");
 
-    console.log("yum1");
-    textSubs();
-    processNode(document.body);
+        console.log("yum1");
+        textSubs();
+        processNode(document.body);
 
-    let count = 1;
-    const interval = setInterval(() => {
-      // console.log("yum2");
-      textSubs();
-      processNode(document.body);
-      count++;
+        let count = 1;
+        const interval = setInterval(() => {
+            // console.log("yum2");
+            textSubs();
+            processNode(document.body);
+            count++;
 
-      if (count >= timeLimit) { // stop after __ milliseconds
-        clearInterval(interval);
-        console.log(`stopped interval after ${timeLimit / 1000} seconds`);
-      }
-    }, intervalDelay); // delay of __ seconds inbetween each run
-  }, initialDelay); // initial delay of __ seconds before first run
+            if (count >= timeLimit) { // stop after __ milliseconds
+                clearInterval(interval);
+                console.log(`stopped interval after ${timeLimit / 1000} seconds`);
+            }
+        }, intervalDelay); // delay of __ seconds inbetween each run
+    }, initialDelay); // initial delay of __ seconds before first run
 
 });

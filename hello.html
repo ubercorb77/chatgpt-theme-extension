@@ -6,11 +6,14 @@
   <link rel="stylesheet" type="text/css" href="hello.css">
 </head>
 <body>
-  <h1>corbin's chatgpt theme extension</h1>
+  <div class="head-container">
+    <h1>corbin's chatgpt theme extension</h1>
+    <p>beta-preview-prototype-experimental</p>
+  </div>
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider1">background top opacity:</label>
+      <label for="slider1">background top darkness:</label>
       <div class="slider-input-group">
         <input type="range" id="slider1" min="0" max="1" step="0.1" value="0.5">
         <div class="slider-value"><span id="value1">foo</span></div>
@@ -20,7 +23,7 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider2">background bottom opacity:</label>
+      <label for="slider2">background bottom darkness:</label>
       <div class="slider-input-group">
         <input type="range" id="slider2" min="0" max="1" step="0.1" value="0.5">
         <div class="slider-value"><span id="value2">foo</span></div>
@@ -30,9 +33,9 @@
 
   <div class="slider-group">
     <div class="slider-container">
-      <label for="slider3">background light/dark bias:</label>
+      <label for="slider3">background overall darkness:</label>
       <div class="slider-input-group">
-        <input type="range" id="slider3" min="0" max="255" value="33">
+        <input type="range" id="slider3" min="0" max="127" value="33">
         <div class="slider-value"><span id="value3">foo</span></div>
       </div>
     </div>
@@ -60,13 +63,13 @@
 
   <div class="folder">
     <button class="folder-button">
-        <span class="folder-label">bubble appearance</span>
+        <span class="folder-label">chatgpt text bubble...</span>
         <span class="folder-arrow">▼</span>
     </button>
     <div class="folder-content">
       <div class="slider-group">
         <div class="slider-container">
-          <label for="slider6">top opacity:</label>
+          <label for="slider6">top darkness:</label>
           <div class="slider-input-group">
             <input type="range" id="slider6" min="0" max="1" step="0.05" value="0.5">
             <div class="slider-value"><span id="value6">foo</span></div>
@@ -76,7 +79,7 @@
     
       <div class="slider-group">
         <div class="slider-container">
-          <label for="slider7">bottom opacity:</label>
+          <label for="slider7">bottom darkness:</label>
           <div class="slider-input-group">
             <input type="range" id="slider7" min="0" max="1" step="0.05" value="0.5">
             <div class="slider-value"><span id="value7">foo</span></div>
@@ -86,7 +89,7 @@
     
       <div class="slider-group">
         <div class="slider-container">
-          <label for="slider8">top-left opacity:</label>
+          <label for="slider8">top-left darkness:</label>
           <div class="slider-input-group">
             <input type="range" id="slider8" min="0" max="1" step="0.05" value="0.5">
             <div class="slider-value"><span id="value8">foo</span></div>
@@ -96,7 +99,7 @@
     
       <div class="slider-group">
         <div class="slider-container">
-          <label for="slider9">bottom-right opacity:</label>
+          <label for="slider9">bottom-right darkness:</label>
           <div class="slider-input-group">
             <input type="range" id="slider9" min="0" max="1" step="0.05" value="0.5">
             <div class="slider-value"><span id="value9">foo</span></div>
