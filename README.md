@@ -13,7 +13,7 @@ known bugs
     - figured out error came from reset button (not just on other tab, but Any Time)
     - talked to claude about it https://claude.ai/chat/ceabd54e-1e07-4dd3-b2ea-578e4b93079c
     - did not yet implement most recent suggested fix
-- ( ) "4o" doesnt change when you switch model
+- (X) "4o" doesnt change when you switch model
 - ( ) doesnt work when doing it on different window?? tf
 
 would be nice to implement:
