@@ -13,6 +13,38 @@ for (let button of folderButtons) {
 }
 
 
+/* ==== for svg presets ==== */
+
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // update active state
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // get path element
+        const path = btn.querySelector('path');
+        const svg = btn.querySelector('svg');
+        if (!path || !svg) return;
+
+        // update input fields from actual attributes
+        document.getElementById('input-claudey-svg-path').value = path.getAttribute('d');
+        document.getElementById('input-claudey-svg-viewbox').value = svg.getAttribute('viewBox');
+        document.getElementById('input-claudey-svg-color').value = path.getAttribute('stroke');
+        document.getElementById('input-claudey-svg-fill').value = path.getAttribute('fill') === 'none' ? 'none' : path.getAttribute('stroke');
+        document.getElementById('input-claudey-svg-width').value = path.getAttribute('stroke-width');
+        document.getElementById('input-claudey-svg-opacity').value = path.getAttribute('stroke-opacity');
+        document.getElementById('input-claudey-svg-linecap').value = path.getAttribute('stroke-linecap');
+        document.getElementById('input-claudey-svg-linejoin').value = path.getAttribute('stroke-linejoin');
+
+        // trigger change events
+        ['path', 'viewbox', 'color', 'fill', 'width', 'opacity', 'linecap', 'linejoin'].forEach(field => {
+            const input = document.getElementById(`input-claudey-svg-${field}`);
+            input.dispatchEvent(new Event('change'));
+        });
+    });
+});
+
+
 /* ==== actual functionality starts here ==== */
 
 const DEFAULT_VALUES = {
@@ -101,38 +133,47 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 'input-claudey-name', // id of the input element
             storageKey: 'sliderClaudeyName', // key to store the value in chrome storage
+            isClaudeyNameSetting: true // flag to indicate this is a claudey name setting
         },
         {
             id: 'input-claudey-svg-path',
-            storageKey: 'sliderClaudeySvgPath'
+            storageKey: 'sliderClaudeySvgPath',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-viewbox',
-            storageKey: 'sliderClaudeySvgViewbox'
+            storageKey: 'sliderClaudeySvgViewbox',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-color',
-            storageKey: 'sliderClaudeySvgColor'
+            storageKey: 'sliderClaudeySvgColor',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-fill',
-            storageKey: 'sliderClaudeySvgFill'
+            storageKey: 'sliderClaudeySvgFill',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-width',
-            storageKey: 'sliderClaudeySvgStrokeWidth'
+            storageKey: 'sliderClaudeySvgStrokeWidth',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-opacity',
-            storageKey: 'sliderClaudeySvgStrokeOpacity'
+            storageKey: 'sliderClaudeySvgStrokeOpacity',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-linecap',
-            storageKey: 'sliderClaudeySvgStrokeLinecap'
+            storageKey: 'sliderClaudeySvgStrokeLinecap',
+            isClaudeySvgSetting: true
         },
         {
             id: 'input-claudey-svg-linejoin',
-            storageKey: 'sliderClaudeySvgStrokeLinejoin'
+            storageKey: 'sliderClaudeySvgStrokeLinejoin',
+            isClaudeySvgSetting: true
         }
     ];
 
@@ -197,6 +238,39 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update CSS variable in the page
             if (sliderConfig.cssVar) {
                 updateCSSInPage(sliderConfig.cssVar, formattedValue);
+            }
+
+            if (sliderConfig.isClaudeyNameSetting) {
+                chrome.tabs.query({
+                    url: [
+                        "https://chatgpt.com/*",
+                        "https://chat.openai.com/*",
+                        "https://chat.com/*"
+                    ]
+                }, function(tabs) {
+                    if (!tabs[0]?.id) return;
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: 'UPDATE_CLAUDEY_NAME',
+                        setting: sliderConfig.storageKey,
+                        name: newValue
+                    });
+                });
+            }
+
+            if (sliderConfig.isClaudeySvgSetting) {
+                chrome.tabs.query({
+                    url: [
+                        "https://chatgpt.com/*",
+                        "https://chat.openai.com/*",
+                        "https://chat.com/*"
+                    ]
+                }, function(tabs) {
+                    if (!tabs[0]?.id) return;
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: 'UPDATE_CLAUDEY_SVG_'+sliderConfig.storageKey.toUpperCase(),
+                        value: newValue
+                    });
+                });
             }
             
             // Log the change

@@ -91,12 +91,14 @@ chrome.storage.local.get(['sliderClaudeyName'], function (result) {
     claudeyName = result.sliderClaudeyName ?? "aria";
 });
 
+
 /* ========== claudey svg stuff ========== */
+
 let claudeySvgEnabled = false;
 let newPathData = 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
 let newViewBox = '50 50 300 300';
 let iconColor = '#ff916b';
-let iconFill = false;
+let iconFill = 'none';
 let strokeWidth = 24;
 let strokeOpacity = 0.9;
 let strokeLinecap = 'round';
@@ -105,28 +107,28 @@ chrome.storage.local.get(['claudeySvgEnabled'], function (result) {
     claudeySvgEnabled = result.claudeySvgEnabled ?? false;
 });
 chrome.storage.local.get(['sliderClaudeySvgPath'], function (result) {
-    newPathData = result.claudeySvgEnabled ?? 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
+    newPathData = result.sliderClaudeySvgPath ?? 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
 });
 chrome.storage.local.get(['sliderClaudeySvgViewbox'], function (result) {
-    newViewBox = result.claudeySvgEnabled ?? '50 50 300 300';
+    newViewBox = result.sliderClaudeySvgViewbox ?? '50 50 300 300';
 });
 chrome.storage.local.get(['sliderClaudeySvgColor'], function (result) {
-    iconColor = result.claudeySvgEnabled ?? '#ff916b';
+    iconColor = result.sliderClaudeySvgColor ?? '#ff916b';
 });
 chrome.storage.local.get(['sliderClaudeySvgFill'], function (result) {
-    iconFill = result.claudeySvgEnabled ?? false;
+    iconFill = result.sliderClaudeySvgFill ?? 'none';
 });
 chrome.storage.local.get(['sliderClaudeySvgStrokeWidth'], function (result) {
-    strokeWidth = result.claudeySvgEnabled ?? 24;
+    strokeWidth = result.sliderClaudeySvgStrokeWidth ?? 24;
 });
 chrome.storage.local.get(['sliderClaudeySvgStrokeOpacity'], function (result) {
-    strokeOpacity = result.claudeySvgEnabled ?? 0.9;
+    strokeOpacity = result.sliderClaudeySvgStrokeOpacity ?? 0.9;
 });
 chrome.storage.local.get(['sliderClaudeySvgStrokeLinecap'], function (result) {
-    strokeLinecap = result.claudeySvgEnabled ?? 'round';
+    strokeLinecap = result.sliderClaudeySvgStrokeLinecap ?? 'round';
 });
 chrome.storage.local.get(['sliderClaudeySvgStrokeLinejoin'], function (result) {
-    strokeLinejoin = result.claudeySvgEnabled ?? 'round';
+    strokeLinejoin = result.sliderClaudeySvgStrokeLinejoin ?? 'round';
 });
 
 
@@ -179,6 +181,51 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             // apply claudey svg
             processNode(document.body);
         }
+    }
+
+    if (request.type === 'UPDATE_CLAUDEY_NAME') {
+        console.log(`received ${request.type}`);
+        claudeyName = request.name;
+        textSubs();
+    }
+
+    // loop through UPDATE_CLAUDEY_SVG_X, UPDATE_CLAUDEY_SVG_Y, etc
+    if (request.type.startsWith('UPDATE_CLAUDEY_SVG_')) {
+        console.log(`received ${request.type}`);
+        let storageKeys = ["sliderClaudeySvgPath", "sliderClaudeySvgViewbox", "sliderClaudeySvgColor", "sliderClaudeySvgFill", "sliderClaudeySvgStrokeWidth", "sliderClaudeySvgStrokeOpacity", "sliderClaudeySvgStrokeLinecap", "sliderClaudeySvgStrokeLinejoin"];
+        for (let i = 1; i <= 8; i++) {
+            if (request.type === `UPDATE_CLAUDEY_SVG_${storageKeys[i - 1].toUpperCase()}`) {
+                switch (i) {
+                    case 1:
+                        newPathData = request.value;
+                        break;
+                    case 2:
+                        newViewBox = request.value;
+                        break;
+                    case 3:
+                        iconColor = request.value;
+                        break;
+                    case 4:
+                        iconFill = request.value;
+                        break;
+                    case 5:
+                        strokeWidth = request.value;
+                        break;
+                    case 6:
+                        strokeOpacity = request.value;
+                        break;
+                    case 7:
+                        strokeLinecap = request.value;
+                        break;
+                    case 8:
+                        strokeLinejoin = request.value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        processNode(document.body);
     }
 });
 
@@ -263,17 +310,30 @@ function updateSvg(svg) {
             path.setAttribute('d', newPathData);
             svg.setAttribute('viewBox', newViewBox);
 
-            if (iconFill) {
-                path.setAttribute('fill', iconColor);
+            if (iconFill === 'none') {
+                path.setAttribute('fill', 'none');
             } else {
-                path.setAttribute('fill', 'none');  // no fill!
+                path.setAttribute('fill', iconColor);  // use the stroke color for fill
             }
 
             path.setAttribute('stroke', iconColor);
-            path.setAttribute('stroke-width', strokeWidth.toString());
-            path.setAttribute('stroke-opacity', strokeOpacity.toString());
-            path.setAttribute('stroke-linecap', strokeLinecap);
-            path.setAttribute('stroke-linejoin', strokeLinejoin);
+            // path.setAttribute('stroke-width', strokeWidth.toString());
+            // path.setAttribute('stroke-opacity', strokeOpacity.toString());
+            // path.setAttribute('stroke-linecap', strokeLinecap);
+            // path.setAttribute('stroke-linejoin', strokeLinejoin);
+
+            if (strokeWidth !== undefined) {
+                path.setAttribute('stroke-width', strokeWidth.toString());
+            }
+            if (strokeOpacity !== undefined) {
+                path.setAttribute('stroke-opacity', strokeOpacity.toString());
+            }
+            if (strokeLinecap !== undefined) {
+                path.setAttribute('stroke-linecap', strokeLinecap);
+            }
+            if (strokeLinejoin !== undefined) {
+                path.setAttribute('stroke-linejoin', strokeLinejoin);
+            }
         }
     }
 }

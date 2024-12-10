@@ -229,3 +229,41 @@ input[type="text"]::placeholder {
 .break-all {
     word-break: break-all;
 }
+
+
+/* ==== svg presets ==== */
+
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    margin: 8px 0;
+}
+
+.preset-btn {
+    background: #262626;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preset-btn:hover {
+    background: #2f2f2f;
+    border-color: rgb(105, 92, 179);
+}
+
+.preset-btn.active {
+    background: rgb(105, 92, 179, 0.2);
+    border-color: rgb(105, 92, 179);
+}
+
+.preset-btn svg {
+    width: 24px;
+    height: 24px;
+}

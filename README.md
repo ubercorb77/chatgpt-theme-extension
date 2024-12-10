@@ -24,18 +24,19 @@ known bugs
 
 would be nice to implement:
 - claudey replacements settings
-    - ( ) remove (?) old "claudey replacements" toggle button
-    - ( ) add folder in popup.html for claudey replacements
-    - name field + toggle
-        - ( ) HTML
-        - ( ) localstorage updates
-        - ( ) actual functionality
+    - (x) remove (?) old "claudey replacements" toggle button
+    - (x) add folder in popup.html for claudey replacements
+    - name field
+        - (x) HTML
+        - (x) localstorage updates
+        - (x) actual functionality
     - svg advanced settings (fill, color, stroke width, etc)
-        - ( ) HTML
-        - ( ) localstorage updates
-        - ( ) actual functionality
-    - ( ) icon choices + toggle
-- ( ) change the names of things
+        - (x) HTML
+        - (x) localstorage updates
+        - (x) actual functionality
+    - (x) icon choices
+    - ( ) make sure reset works
+    - ( ) make sure toggles work
 - ( ) chat bubbles are claude gray but user bubbles are true gray
 - ( ) need to change the popup styling bc its lowk ugly
 - (x) allow the claudey thing to be turned on and off
