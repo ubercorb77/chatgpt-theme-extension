@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="hello.css">
 </head>
+
 <body>
   <div class="head-container">
     <h1>corbin's chatgpt theme extension</h1>
@@ -53,18 +55,19 @@
 
   <div class="slider-group">
     <div class="slider-container">
-        <label for="input5">font name:</label>
-        <div class="slider-input-group">
-          <input type="text" id="input5" placeholder="enter font name">
-          <!-- <div class="slider-value">current font: <span id="value5" class="text-xs break-all">foo</span></div> -->
-        </div>
+      <label for="input5">font name:</label>
+      <div class="slider-input-group">
+        <input type="text" id="input5" placeholder="enter font name">
+        <!-- <div class="slider-value">current font: <span id="value5" class="text-xs break-all">foo</span></div> -->
+      </div>
     </div>
   </div>
 
+
   <div class="folder">
     <button class="folder-button">
-        <span class="folder-label">chatgpt text bubble...</span>
-        <span class="folder-arrow">▼</span>
+      <span class="folder-label">chatgpt text bubble...</span>
+      <span class="folder-arrow">▼</span>
     </button>
     <div class="folder-content">
       <div class="slider-group">
@@ -76,7 +79,7 @@
           </div>
         </div>
       </div>
-    
+
       <div class="slider-group">
         <div class="slider-container">
           <label for="slider7">bottom darkness:</label>
@@ -86,7 +89,7 @@
           </div>
         </div>
       </div>
-    
+
       <div class="slider-group">
         <div class="slider-container">
           <label for="slider8">top-left darkness:</label>
@@ -96,7 +99,7 @@
           </div>
         </div>
       </div>
-    
+
       <div class="slider-group">
         <div class="slider-container">
           <label for="slider9">bottom-right darkness:</label>
@@ -109,20 +112,73 @@
     </div>
   </div>
 
-  <div class="slider-group">
+
+  <div class="folder">
+    <button class="folder-button">
+      <span class="folder-label">cute replacements...</span>
+      <span class="folder-arrow">▼</span>
+    </button>
+    <div class="folder-content">
+
+      <div class="slider-group">
+        <div class="slider-container">
+          <div class="slider-label-and-toggle">
+            <label>name:</label>
+            <button id="toggleButtonClaudeyName" class="toggle-button">on</button>
+          </div>
+          <div class="slider-input-group">
+            <input type="text" id="input-claudey-name" placeholder="enter name..">
+            <!-- <div class="slider-value"><span id="value-claudey-name">foo</span></div> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-container">
+          <div class="slider-label-and-toggle">
+            <label>svg:</label>
+            <button id="toggleButtonClaudeySvg" class="toggle-button">on</button>
+          </div>
+          <label>path data:</label>
+          <input type="text" id="input-claudey-svg-path" placeholder="enter svg path data..">
+          <label>viewbox:</label>
+          <input type="text" id="input-claudey-svg-viewbox" placeholder="enter svg viewbox..">
+          <label>color:</label>
+          <input type="text" id="input-claudey-svg-color" placeholder="enter svg color..">
+          <label>fill:</label>
+          <input type="text" id="input-claudey-svg-fill" placeholder="enter svg fill..">
+          <label>width:</label>
+          <input type="text" id="input-claudey-svg-width" placeholder="enter svg width..">
+          <label>opacity:</label>
+          <input type="text" id="input-claudey-svg-opacity" placeholder="enter svg opacity..">
+          <label>linecap:</label>
+          <input type="text" id="input-claudey-svg-linecap" placeholder="enter svg linecap..">
+          <label>linejoin:</label>
+          <input type="text" id="input-claudey-svg-linejoin" placeholder="enter svg linejoin..">
+        </div>
+      </div>
+
+    </div> <!-- end folder-content -->
+  </div> <!-- end folder -->
+
+
+  <!-- removed the FOR attribute for the below label so that it is unassociated with the button behavior -->
+  <!-- <div class="slider-group">
     <div class="slider-container">
-      <label>"claudey" replacements:</label> <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
+      <label>"claudey" replacements:</label> 
       <button id="toggleButton" class="toggle-button">enabled</button>
     </div>
-  </div>
+  </div> -->
 
   <div class="slider-group">
     <div class="slider-container">
-      <label>reset to defaults:</label> <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
+      <label>reset to defaults:</label>
+      <!-- removed the FOR attribute so that this label is unassociated with the button behavior -->
       <button id="resetButton" class="reset-button">reset</button>
     </div>
   </div>
 
   <script src="hello.js"></script>
 </body>
+
 </html>

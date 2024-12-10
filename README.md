@@ -20,6 +20,7 @@ known bugs
     - wait i think i fixed it but then i found the same error from something else
 - (X) "4o" doesnt change when you switch model
 - ( ) doesnt work when doing it on different window?? tf
+- (X) fixed issue where background loaded then unloaded (?) when reloading on the new chat page (somehow it was able to be fixed by just calling applyStoredValues() in the brute force loop. idk what this implies, but yeah it's alright now i guess. and i don't wanna look into it more rn)
 
 would be nice to implement:
 - claudey replacements settings

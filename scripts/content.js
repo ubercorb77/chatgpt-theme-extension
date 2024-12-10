@@ -79,15 +79,59 @@ window.addEventListener('load', applyStoredValues);
 
 
 
-/* ========== claudey stuff ========== */
+/* ========== claudey name stuff ========== */
 
-let claudeyEnabled = false;  // default state
-
-// load initial state
-chrome.storage.local.get(['claudeyEnabled'], function (result) {
-    claudeyEnabled = result.claudeyEnabled ?? false;
+let claudeyNameEnabled = false;
+let claudeyName = "aria";
+// load default state
+chrome.storage.local.get(['claudeyNameEnabled'], function (result) {
+    claudeyNameEnabled = result.claudeyNameEnabled ?? false;
+});
+chrome.storage.local.get(['sliderClaudeyName'], function (result) {
+    claudeyName = result.sliderClaudeyName ?? "aria";
 });
 
+/* ========== claudey svg stuff ========== */
+let claudeySvgEnabled = false;
+let newPathData = 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
+let newViewBox = '50 50 300 300';
+let iconColor = '#ff916b';
+let iconFill = false;
+let strokeWidth = 24;
+let strokeOpacity = 0.9;
+let strokeLinecap = 'round';
+let strokeLinejoin = 'round';
+chrome.storage.local.get(['claudeySvgEnabled'], function (result) {
+    claudeySvgEnabled = result.claudeySvgEnabled ?? false;
+});
+chrome.storage.local.get(['sliderClaudeySvgPath'], function (result) {
+    newPathData = result.claudeySvgEnabled ?? 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
+});
+chrome.storage.local.get(['sliderClaudeySvgViewbox'], function (result) {
+    newViewBox = result.claudeySvgEnabled ?? '50 50 300 300';
+});
+chrome.storage.local.get(['sliderClaudeySvgColor'], function (result) {
+    iconColor = result.claudeySvgEnabled ?? '#ff916b';
+});
+chrome.storage.local.get(['sliderClaudeySvgFill'], function (result) {
+    iconFill = result.claudeySvgEnabled ?? false;
+});
+chrome.storage.local.get(['sliderClaudeySvgStrokeWidth'], function (result) {
+    strokeWidth = result.claudeySvgEnabled ?? 24;
+});
+chrome.storage.local.get(['sliderClaudeySvgStrokeOpacity'], function (result) {
+    strokeOpacity = result.claudeySvgEnabled ?? 0.9;
+});
+chrome.storage.local.get(['sliderClaudeySvgStrokeLinecap'], function (result) {
+    strokeLinecap = result.claudeySvgEnabled ?? 'round';
+});
+chrome.storage.local.get(['sliderClaudeySvgStrokeLinejoin'], function (result) {
+    strokeLinejoin = result.claudeySvgEnabled ?? 'round';
+});
+
+
+
+/* ========== message listener ========== */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     /* ========== update css listener ========== */
     if (request.type === 'UPDATE_CSS') {
@@ -95,13 +139,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // console.log(`Content script updated ${request.variable} to ${request.value}`);
     }
 
-    /* ========== claudey button listener ========== */
-    if (request.type === 'TOGGLE_REPLACEMENTS') {
-        if (claudeyEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
+    /* ========== claudey name button listener ========== */
+    if (request.type === 'TOGGLE_NAME_REPLACEMENTS') {
+        if (claudeyNameEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
 
-        claudeyEnabled = request.enabled;
+        claudeyNameEnabled = request.enabled;
         // revert changes if disabled
-        if (!claudeyEnabled) {
+        if (!claudeyNameEnabled) {
             // you might want to add code here to revert the changes
             // like changing "claudey" back to "ChatGPT"
 
@@ -111,8 +155,28 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             // or just make an alert for the user to reload the page
             alert("pls reload page to see changes");
         } else {
-            // apply claudey
+            // apply claudey name
             textSubs();
+        }
+    }
+
+    /* ========== claudey svg button listener ========== */
+    if (request.type === 'TOGGLE_SVG_REPLACEMENTS') {
+        if (claudeyNameEnabled === request.enabled) return; // this line is so we don't unnecessarily do the below code after we press the reset button
+
+        claudeyNameEnabled = request.enabled;
+        // revert changes if disabled
+        if (!claudeyNameEnabled) {
+            // you might want to add code here to revert the changes
+            // like changing "claudey" back to "ChatGPT"
+
+            // or just reload the page
+            // location.reload();
+
+            // or just make an alert for the user to reload the page
+            alert("pls reload page to see changes");
+        } else {
+            // apply claudey svg
             processNode(document.body);
         }
     }
@@ -129,11 +193,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 // const claudeyName = 'claudey';
 
 // galaxy svg
-const newPathData = 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
-const newViewBox = '50 50 300 300';
-const iconColor = 'hsl(15, 63.1%, 59.6%)';
-const iconFill = false;
-const claudeyName = 'aria';
+// const newPathData = 'M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078';
+// const newViewBox = '50 50 300 300';
+// const iconColor = 'hsl(15, 63.1%, 59.6%)';
+// const iconFill = false;
+// const strokeWidth = '24';
+// const strokeOpacity = '0.9';
+// const strokeLinecap = 'round';
+// const strokeLinejoin = 'round';
+
+// const claudeySvgEnabled = true;
 
 
 /* ========== helper functions for claudey replacements (text & icon) ========== */
@@ -152,7 +221,7 @@ const claudeyName = 'aria';
  * and also cheap enough to not be a problem rn
  */
 function textSubs() {
-    if (!claudeyEnabled) return;
+    if (!claudeyNameEnabled) return;
 
     document.querySelectorAll('button[data-testid="model-switcher-dropdown-button"] > div').forEach(div => {
         if (div && div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
@@ -183,7 +252,7 @@ function textSubs() {
  * @param {SVGElement} svg the svg element to update
  */
 function updateSvg(svg) {
-    if (!claudeyEnabled) return;
+    if (!claudeySvgEnabled) return;
 
     // Find the <path> element inside the current SVG
     const path = svg.querySelector('path');
@@ -200,13 +269,12 @@ function updateSvg(svg) {
                 path.setAttribute('fill', 'none');  // no fill!
             }
 
-            path.setAttribute('stroke', '#ff916b');
-            path.setAttribute('stroke-width', '24');
-            path.setAttribute('stroke-opacity', '0.9');
-            path.setAttribute('stroke-linecap', 'round');
-            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('stroke', iconColor);
+            path.setAttribute('stroke-width', strokeWidth.toString());
+            path.setAttribute('stroke-opacity', strokeOpacity.toString());
+            path.setAttribute('stroke-linecap', strokeLinecap);
+            path.setAttribute('stroke-linejoin', strokeLinejoin);
         }
-        
     }
 }
 
@@ -215,7 +283,7 @@ function updateSvg(svg) {
  * @param {Node} node the node to process
  */
 function processNode(node) {
-    if (!claudeyEnabled) return;
+    if (!claudeySvgEnabled) return;
 
     if (node.tagName === 'SVG' && node.classList.contains('icon-md')) {
         updateSvg(node);
@@ -242,9 +310,9 @@ function setupMutationObserver() {
             }
 
             // Check attribute changes for the model switcher dropdown button
-            // (we only need to do this when claudey replacements are enabled,
+            // (we only need to do this when claudey text replacements are enabled,
             //    because otherwise it automatically works)
-            if (!claudeyEnabled) { continue; }
+            if (!claudeyNameEnabled) { continue; }
             if (mutation.type === 'attributes' &&
                 mutation.attributeName === 'aria-label' &&
                 mutation.target.matches('[data-testid="model-switcher-dropdown-button"]')) {
@@ -303,14 +371,14 @@ window.addEventListener('load', () => {
 
         textSubs();
         processNode(document.body);
-        // applyStoredValues();
+        applyStoredValues();
 
         let count = 1;
         const interval = setInterval(() => {
             // console.log("yum2");
             textSubs();
             processNode(document.body);
-            // applyStoredValues();
+            applyStoredValues();
             count++;
 
             if (count >= timeLimit) { // stop after __ milliseconds

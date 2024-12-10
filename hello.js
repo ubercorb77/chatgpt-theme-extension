@@ -1,13 +1,16 @@
 /* ==== for popup folder ==== */
 
 // add this inside your DOMContentLoaded event listener
-const folderButton = document.querySelector('.folder-button');
-folderButton.addEventListener('click', () => {
-    folderButton.parentElement.classList.toggle('collapsed');
-});
+const folderButtons = document.querySelectorAll('.folder-button');
 
-// optionally start collapsed 
-document.querySelector('.folder').classList.add('collapsed');
+for (let button of folderButtons) {
+    button.addEventListener('click', () => {
+        button.parentElement.classList.toggle('collapsed');
+    });
+
+    // start collapsed
+    button.parentElement.classList.add('collapsed');
+}
 
 
 /* ==== actual functionality starts here ==== */
@@ -22,7 +25,19 @@ const DEFAULT_VALUES = {
     sliderValue7: 0,
     sliderValue8: 0.6,
     sliderValue9: 0.4,
-    claudeyEnabled: false
+
+    claudeyNameEnabled: true,
+    sliderClaudeyName: "aria",
+
+    claudeySvgEnabled: true,
+    sliderClaudeySvgPath: "M72.434 193.066c1.172-15.715 6.653-40.211 12.612-54.63 42.099-101.852 262.2 39.955 157.477 122.827-16.963 13.422-49.866 20.916-71.508 12.552-29.581-11.437-68.191-95.138-26.041-115.398 39.258-18.873 84.606 15.498 75.01 57.066-15.658 67.822-96.915-39.055-36.64-17.895m-38.041 52.306c73.242 115.547 228.76-6.983 168.351-95.078",
+    sliderClaudeySvgViewbox: "50 50 300 300",
+    sliderClaudeySvgColor: "#ff906b",
+    sliderClaudeySvgFill: false,
+    sliderClaudeySvgStrokeWidth: 24,
+    sliderClaudeySvgStrokeOpacity: 0.9,
+    sliderClaudeySvgStrokeLinecap: "round",
+    sliderClaudeySvgStrokeLinejoin: "round"
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -82,6 +97,42 @@ document.addEventListener('DOMContentLoaded', function() {
             valueId: 'value9',
             storageKey: 'sliderValue9',
             cssVar: '--slider-value-9'
+        },
+        {
+            id: 'input-claudey-name', // id of the input element
+            storageKey: 'sliderClaudeyName', // key to store the value in chrome storage
+        },
+        {
+            id: 'input-claudey-svg-path',
+            storageKey: 'sliderClaudeySvgPath'
+        },
+        {
+            id: 'input-claudey-svg-viewbox',
+            storageKey: 'sliderClaudeySvgViewbox'
+        },
+        {
+            id: 'input-claudey-svg-color',
+            storageKey: 'sliderClaudeySvgColor'
+        },
+        {
+            id: 'input-claudey-svg-fill',
+            storageKey: 'sliderClaudeySvgFill'
+        },
+        {
+            id: 'input-claudey-svg-width',
+            storageKey: 'sliderClaudeySvgStrokeWidth'
+        },
+        {
+            id: 'input-claudey-svg-opacity',
+            storageKey: 'sliderClaudeySvgStrokeOpacity'
+        },
+        {
+            id: 'input-claudey-svg-linecap',
+            storageKey: 'sliderClaudeySvgStrokeLinecap'
+        },
+        {
+            id: 'input-claudey-svg-linejoin',
+            storageKey: 'sliderClaudeySvgStrokeLinejoin'
         }
     ];
 
@@ -144,7 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Update CSS variable in the page
-            updateCSSInPage(sliderConfig.cssVar, formattedValue);
+            if (sliderConfig.cssVar) {
+                updateCSSInPage(sliderConfig.cssVar, formattedValue);
+            }
             
             // Log the change
             console.log(`${sliderConfig.id} changed to:`, newValue);
@@ -192,9 +245,9 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.storage.local.set({ [sliderConfig.storageKey]: defaultValue });
         });
 
-        // reset claudey
-        chrome.storage.local.set({ claudeyEnabled: DEFAULT_VALUES.claudeyEnabled });
-        updateToggleButton(DEFAULT_VALUES.claudeyEnabled);
+        // reset claudey name
+        chrome.storage.local.set({ claudeyNameEnabled: DEFAULT_VALUES.claudeyNameEnabled });
+        updateToggleButtonClaudeyName(DEFAULT_VALUES.claudeyNameEnabled);
         chrome.tabs.query({
             url: [
                 "https://chatgpt.com/*",
@@ -204,40 +257,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }, function (tabs) {
             if (!tabs[0]?.id) return;
             chrome.tabs.sendMessage(tabs[0].id, {
-                type: 'TOGGLE_REPLACEMENTS',
-                enabled: DEFAULT_VALUES.claudeyEnabled
+                type: 'TOGGLE_NAME_REPLACEMENTS',
+                enabled: DEFAULT_VALUES.claudeyNameEnabled
             });
         });
+        // TODO: also reset the input value
+
+        // reset claudey svg
+        chrome.storage.local.set({ claudeySvgEnabled: DEFAULT_VALUES.claudeySvgEnabled });
+        updateToggleButtonClaudeySvg(DEFAULT_VALUES.claudeySvgEnabled);
+        chrome.tabs.query({
+            url: [
+                "https://chatgpt.com/*",
+                "https://chat.openai.com/*",
+                "https://chat.com/*"
+            ]
+        }, function (tabs) {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: 'TOGGLE_SVG_REPLACEMENTS',
+                enabled: DEFAULT_VALUES.claudeySvgEnabled
+            });
+        });
+        // TODO: also reset the input values
         
         console.log('Reset all values to defaults');
     });
 
 
-    /* ========== Claudey toggle button ========== */
+    /* ========== Claudey name toggle button ========== */
 
-    const toggleButton = document.getElementById('toggleButton');
+    const toggleButtonClaudeyName = document.getElementById('toggleButtonClaudeyName');
 
     // load initial state
-    chrome.storage.local.get(['claudeyEnabled'], function(result) {
-        const enabled = result.claudeyEnabled ?? DEFAULT_VALUES.claudeyEnabled;
-        updateToggleButton(enabled);
+    chrome.storage.local.get(['claudeyNameEnabled'], function(result) {
+        const enabled = result.claudeyNameEnabled ?? DEFAULT_VALUES.claudeyNameEnabled;
+        updateToggleButtonClaudeyName(enabled);
     });
 
-    function updateToggleButton(enabled) {
-        toggleButton.textContent = enabled ? 'enabled' : 'disabled';
-        toggleButton.classList.toggle('disabled', !enabled);
+    function updateToggleButtonClaudeyName(enabled) {
+        toggleButtonClaudeyName.textContent = enabled ? 'on' : 'off';
+        toggleButtonClaudeyName.classList.toggle('disabled', !enabled);
     }
 
-    toggleButton.addEventListener('click', function() {
-        chrome.storage.local.get(['claudeyEnabled'], function(result) {
-            const currentlyEnabled = result.claudeyEnabled ?? DEFAULT_VALUES.claudeyEnabled;
+    toggleButtonClaudeyName.addEventListener('click', function() {
+        chrome.storage.local.get(['claudeyNameEnabled'], function(result) {
+            const currentlyEnabled = result.claudeyNameEnabled ?? DEFAULT_VALUES.claudeyNameEnabled;
             const newEnabled = !currentlyEnabled;
             
             // update storage
-            chrome.storage.local.set({ claudeyEnabled: newEnabled });
+            chrome.storage.local.set({ claudeyNameEnabled: newEnabled });
             
             // update button appearance
-            updateToggleButton(newEnabled);
+            updateToggleButtonClaudeyName(newEnabled);
             
             // tell content script
             chrome.tabs.query({
@@ -249,13 +321,56 @@ document.addEventListener('DOMContentLoaded', function() {
             }, function(tabs) {
                 if (!tabs[0]?.id) return;
                 chrome.tabs.sendMessage(tabs[0].id, {
-                    type: 'TOGGLE_REPLACEMENTS',
+                    type: 'TOGGLE_NAME_REPLACEMENTS',
                     enabled: newEnabled
                 });
             });
         });
     });
 
+
+    /* ========== Claudey svg toggle button ========== */
+
+    const toggleButtonClaudeySvg = document.getElementById('toggleButtonClaudeySvg');
+
+    // load initial state
+    chrome.storage.local.get(['claudeySvgEnabled'], function(result) {
+        const enabled = result.claudeySvgEnabled ?? DEFAULT_VALUES.claudeyNameEnabled;
+        updateToggleButtonClaudeySvg(enabled);
+    });
+
+    function updateToggleButtonClaudeySvg(enabled) {
+        toggleButtonClaudeySvg.textContent = enabled ? 'on' : 'off';
+        toggleButtonClaudeySvg.classList.toggle('disabled', !enabled);
+    }
+
+    toggleButtonClaudeySvg.addEventListener('click', function() {
+        chrome.storage.local.get(['claudeySvgEnabled'], function(result) {
+            const currentlyEnabled = result.claudeySvgEnabled ?? DEFAULT_VALUES.claudeyNameEnabled;
+            const newEnabled = !currentlyEnabled;
+            
+            // update storage
+            chrome.storage.local.set({ claudeySvgEnabled: newEnabled });
+            
+            // update button appearance
+            updateToggleButtonClaudeySvg(newEnabled);
+            
+            // tell content script
+            chrome.tabs.query({
+                url: [
+                    "https://chatgpt.com/*",
+                    "https://chat.openai.com/*",
+                    "https://chat.com/*"
+                ]
+            }, function(tabs) {
+                if (!tabs[0]?.id) return;
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    type: 'TOGGLE_SVG_REPLACEMENTS',
+                    enabled: newEnabled
+                });
+            });
+        });
+    });
 
     /* ========== stored values ========== */
     console.log('Popup opened, getting all stored values...');
