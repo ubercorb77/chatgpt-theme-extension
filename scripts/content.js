@@ -1,6 +1,7 @@
+// empty line
+
 /* ========== font stuff ========== */
 
-// Add this near the start of content.js, before your existing code
 function injectFontFace() {
     const fontUrl = chrome.runtime.getURL('Noto_Serif_KR/NotoSerifKR-VariableFont_wght.ttf');
     const style = document.createElement('style');
@@ -13,13 +14,15 @@ function injectFontFace() {
     document.head.appendChild(style);
 }
 
-// Call it immediately
 injectFontFace();
 
 
 /* ========== stored values stuff ========== */
 
-// Immediately try to load and apply stored values
+/**
+ * this function is immediately invoked
+ * and is used to apply the stored values to the page
+ */
 function applyStoredValues() {
     chrome.storage.local.get(null, function (items) {
         // console.log('Content script loading stored values:', items);
@@ -55,19 +58,28 @@ function applyStoredValues() {
     });
 }
 
-// Apply immediately
+// call above function immediately, and also we have two backups to call it again
 applyStoredValues();
 
-// Also apply when document is ready (as backup)
+function DOMLoadedFunction() {
+    console.log("DOM loaded");
+    applyStoredValues();
+}
+function windowLoadedFunction() {
+    console.log("Window loaded");
+    applyStoredValues();
+}
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applyStoredValues);
 } else {
     applyStoredValues();
 }
-
-// Also apply when document is fully loaded (as backup)
 window.addEventListener('load', applyStoredValues);
 
+
+
+/* ========== claudey stuff ========== */
 
 let claudeyEnabled = false;  // default state
 
@@ -107,7 +119,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 
-/* ========== mutation observer stuff ========== */
+/* ========== some data for claudey replacements ========== */
 
 // claude svg
 // const newPathData = 'm19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z';
@@ -123,13 +135,27 @@ const iconColor = 'hsl(15, 63.1%, 59.6%)';
 const iconFill = false;
 const claudeyName = 'aria';
 
+
+/* ========== helper functions for claudey replacements (text & icon) ========== */
+
+/**
+ * this function replaces:
+ * - "ChatGPT 4o" with "claudey 4o"
+ * - "ChatGPT can make mistakes [...]" with "claudey can make mistakes [...]"
+ * 
+ * this function is called:
+ * - in the initial replacements loop for X seconds
+ * - when claudey replacements is toggled on
+ * - when a mutation is observed
+ * 
+ * the logic is so bad but it's simple enough to fix later
+ * and also cheap enough to not be a problem rn
+ */
 function textSubs() {
     if (!claudeyEnabled) return;
 
-    // console.log("ran textSubs()");
-    document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
-        // trying to target the "ChatGPT 4o" element
-        if (div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
+    document.querySelectorAll('button[data-testid="model-switcher-dropdown-button"] > div').forEach(div => {
+        if (div && div.innerHTML.trim().startsWith('ChatGPT') && div.innerHTML.trim().length > 8) {
             // `&& div.innerHTML.trim().length > 8` is here because sometimes it loads with only "ChatGPT " and then changes to "ChatGPT"<span>4o</span> after a fraction of a second ... which is interesting
 
             // console.log("div: ", div);
@@ -138,7 +164,9 @@ function textSubs() {
             div.innerHTML = claudeyName + div.innerHTML.trim().substring(7);
             // console.log("changed innerHTML: ", '"' + div.innerHTML + '"');
         }
+    });
 
+    document.querySelectorAll('div.text-token-text-secondary').forEach(div => {
         var innerDiv = div.querySelector('div > div');
         if (innerDiv) {
             innerDiv = innerDiv.querySelector('div > div');
@@ -149,11 +177,13 @@ function textSubs() {
     });
 }
 
-// Function to update SVG elements
+/**
+ * this function updates an svg element
+ * this is called in processNode()
+ * @param {SVGElement} svg the svg element to update
+ */
 function updateSvg(svg) {
     if (!claudeyEnabled) return;
-
-    // console.log("ran updateSvg()");
 
     // Find the <path> element inside the current SVG
     const path = svg.querySelector('path');
@@ -180,8 +210,13 @@ function updateSvg(svg) {
     }
 }
 
+/**
+ * this function processes a node to update its SVGs
+ * @param {Node} node the node to process
+ */
 function processNode(node) {
-    // console.log("ran processNode()");
+    if (!claudeyEnabled) return;
+
     if (node.tagName === 'SVG' && node.classList.contains('icon-md')) {
         updateSvg(node);
     } else if (node.querySelectorAll) {
@@ -190,21 +225,26 @@ function processNode(node) {
     }
 }
 
+
+/* ========== mutation observer for claudey replacements (text & icon) ========== */
+
 function setupMutationObserver() {
     // console.log("ran setupMutationObserver()");
     // Create a MutationObserver to watch for changes in the document
     const observer = new MutationObserver(mutationsList => {
+        textSubs();
         for (const mutation of mutationsList) {
-            // Check for added nodes so we can run textSubs() + processNode()
+            // Check for added nodes so we can do text & icon replacements
             if (mutation.type === 'childList') {
-                textSubs();
-                // Check added nodes
                 mutation.addedNodes.forEach(node => {
                     processNode(node);
                 });
             }
 
             // Check attribute changes for the model switcher dropdown button
+            // (we only need to do this when claudey replacements are enabled,
+            //    because otherwise it automatically works)
+            if (!claudeyEnabled) { continue; }
             if (mutation.type === 'attributes' &&
                 mutation.attributeName === 'aria-label' &&
                 mutation.target.matches('[data-testid="model-switcher-dropdown-button"]')) {
@@ -243,9 +283,12 @@ function setupMutationObserver() {
 
 setupMutationObserver();
 
-let initialDelay = 500;
-let intervalDelay = 500;
-let timeLimit = 30000;
+
+/* ========== initial claudey replacements (text & icon) ========== */
+
+let initialDelay = 250;
+let intervalDelay = 250;
+let timeLimit = 10000;
 window.addEventListener('load', () => {
     // console.log("window loaded");
     // setupMutationObserver();
@@ -254,19 +297,20 @@ window.addEventListener('load', () => {
     // processNode(document.body);
     // console.log("hello");
 
-
     // Wait before starting the interval
     setTimeout(() => {
         // console.log("starting interval after 5 second delay");
 
         textSubs();
         processNode(document.body);
+        // applyStoredValues();
 
         let count = 1;
         const interval = setInterval(() => {
             // console.log("yum2");
             textSubs();
             processNode(document.body);
+            // applyStoredValues();
             count++;
 
             if (count >= timeLimit) { // stop after __ milliseconds
